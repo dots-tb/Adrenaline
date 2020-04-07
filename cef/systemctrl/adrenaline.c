@@ -21,6 +21,7 @@
 
 #include "../../adrenaline_compat.h"
 
+#include "ge-vita.h"
 #include "binary.h"
 
 typedef struct {
@@ -156,17 +157,28 @@ void initAdrenalineInfo() {
 }
 
 int adrenaline_interrupt() {
+	ge_vita_interrupt();
+
+	if (adrenaline->psp_cmd == ADRENALINE_PSP_CMD_NONE) {
+		return 0;
+	}
+
 	// Signal adrenaline semaphore
 	sceKernelSignalSema(adrenaline_semaid, 1);
+
 	return 0;
 }
 
 int adrenaline_thread(SceSize args, void *argp) {
+	int cmd;
 	while (1) {
 		// Wait for semaphore signal
 		sceKernelWaitSema(adrenaline_semaid, 1, NULL);
 
-		switch (adrenaline->psp_cmd) {
+		cmd = adrenaline->psp_cmd;
+		adrenaline->psp_cmd = ADRENALINE_PSP_CMD_NONE;
+
+		switch (cmd) {
 			case ADRENALINE_PSP_CMD_REINSERT_MS:
 				sceIoDevctl("fatms0:", 0x0240D81E, NULL, 0, NULL, 0);
 				break;

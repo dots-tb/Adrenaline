@@ -130,6 +130,10 @@ void GetFunctions() {
   }
 }
 
+void SendVitageRequest() {
+  sceCompatInterrupt(KERMIT_VIRTUAL_INTR_IMPOSE_CH1);
+}
+
 void SendAdrenalineRequest(int cmd) {
   SceAdrenaline *adrenaline = (SceAdrenaline *)ScePspemuConvertAddress(ADRENALINE_ADDRESS, KERMIT_OUTPUT_MODE, ADRENALINE_SIZE);
   adrenaline->psp_cmd = cmd;

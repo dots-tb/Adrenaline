@@ -29,6 +29,7 @@
 #include "sysmodpatches.h"
 #include "nodrm.h"
 #include "malloc.h"
+#include "ge_vita.h"
 
 PSP_MODULE_INFO("SystemControl", 0x1007, 1, 0);
 
@@ -440,6 +441,8 @@ int OnModuleStart(SceModule2 *mod) {
 		ClearCaches();
 	} else if (strcmp(modname, "sceSAScore") == 0) {
 		PatchSasCore();
+	} else if (strcmp(modname, "sceGe_driver") == 0) {
+		ge_vita_init(text_addr);
 	} else if (strcmp(modname, "DJMAX") == 0 || strcmp(modname, "djmax") == 0) {
 		u32 func = sctrlHENFindImport(modname, "IoFileMgrForUser", 0xE3EB004C);
 		if (func) {
